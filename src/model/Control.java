@@ -24,20 +24,25 @@ public class Control {
 
         String out = "";
         //INSERT INTO countries('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57') VALUES
-        Pattern intoCountries = Pattern.compile("INSERT INTO countries\\('([a-z0-9]|-)+', '[A-Z]([a-z])*', ([0-9]|\\.)+, '\\+[0-9]+'\\) VALUES");
+        Pattern intoCountries = Pattern.compile("INSERT INTO countries\\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', ([0-9]|\\.)+, '\\+[0-9]+'\\) VALUES");
         //INSERT INTO cities('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2) VALUES
-        Pattern intoCities = Pattern.compile("INSERT INTO cities\\('([a-z0-9]|-)+', '[A-Z]([a-z])*', '([a-z0-9]|-)+', ([0-9]|\\.)+\\) VALUES");
+        Pattern intoCities = Pattern.compile("INSERT INTO cities\\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', '([a-z0-9]|-)+', ([0-9]|\\.)+\\) VALUES");
 
         mat = intoCountries.matcher(command);
         if(mat.matches()){
+
             values = command.substring(22,command.length()-8);
             arrValues = values.split(",");
             String id = arrValues[0].substring(1, arrValues[0].length()-1);
             String name = arrValues[1].substring(2,arrValues[1].length()-1);
             String population = arrValues[2].substring(1);
             String countryCode = arrValues[3].substring(2, arrValues[3].length()-1);
-            countries.add(new Country(id, name, Double.valueOf(population), countryCode));
-            out = countries.get(0).toPrint();
+            if(countryExists(id)){
+                out = ("This country already exists");
+            }else{
+                countries.add(new Country(id, name, Double.valueOf(population), countryCode));
+                out = countries.get(0).toPrint();
+            }
         }
 
         mat = intoCities.matcher(command);
