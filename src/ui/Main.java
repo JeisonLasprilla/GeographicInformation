@@ -36,7 +36,6 @@ public class Main {
             case "1":
                 String command = sc.nextLine();
                 redirect(command);
-//                control.readCommand(command,"");
                 break;
 
             case "2":
@@ -56,12 +55,11 @@ public class Main {
         if(command.contains("INSERT INTO")){
             System.out.println(control.insertInto(command, ""));
         }else if(command.contains("SELECT * FROM")){
-            control.select(command,"");
-        }else if (command.contains("DELETE FROM")) {
-            control.delete(command, "");
+            System.out.println(control.select(command));
+        }else if(command.contains("DELETE FROM")){
+            System.out.println(control.delete(command));
         }else{
             control.typo();
         }
     }
-
 }
