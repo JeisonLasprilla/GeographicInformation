@@ -7,6 +7,14 @@ import java.util.regex.Pattern;
 
 public class Control {
 
+    //Todo
+    // Test
+    // UML
+    // Readme
+    // Terminar los métodos
+    // Comparator
+    // SQL & JSON
+
     private ArrayList<Country> countries;
     private Matcher mat;
     private String[] arrValues;
@@ -23,16 +31,19 @@ public class Control {
 
     public String insertInto(String command, String values) {
 
+        System.out.println(command);
+
         String out = "";
-        //INSERT INTO countries('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57') VALUES
-        Pattern intoCountries = Pattern.compile("INSERT INTO countries\\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', ([0-9]|\\.)+, '\\+[0-9]+'\\) VALUES");
-        //INSERT INTO cities('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2) VALUES
-        Pattern intoCities = Pattern.compile("INSERT INTO cities\\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', '([a-z0-9]|-)+', ([0-9]|\\.)+\\) VALUES");
+        //INSERT INTO countries(id, name, population, countryCode) VALUES ('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57')
+        Pattern intoCountries = Pattern.compile("INSERT INTO countries\\(id, name, population, countryCode\\) VALUES \\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', (([0-9])|(\\.))+, '\\+([0-9])+'\\)");
+
+        //INSERT INTO cities(id, name, countryID, population) VALUES ('91346eb8-3dd2-11ed-b878-0242ac120002', 'Puebla', '83b3e642-3dd2-11ed-b878-0242ac120002', 3.2)
+        Pattern intoCities = Pattern.compile("INSERT INTO cities\\(id, name, countryID, population\\) VALUES \\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', '([a-z0-9]|-)+', ([0-9]|\\.)+\\)");
 
         mat = intoCountries.matcher(command);
         if (mat.matches()) {
 
-            values = command.substring(22, command.length() - 8);
+            values = command.substring(65, command.length() - 1);
             arrValues = values.split(",");
             String id = arrValues[0].substring(1, arrValues[0].length() - 1);
             String name = arrValues[1].substring(2, arrValues[1].length() - 1);
@@ -50,7 +61,7 @@ public class Control {
 
         mat = intoCities.matcher(command);
         if (mat.matches()) {
-            values = command.substring(19, command.length() - 8);
+            values = command.substring(60, command.length() - 1);
             arrValues = values.split(",");
             String id = arrValues[0].substring(1, arrValues[0].length() - 1);
             String name = arrValues[1].substring(2, arrValues[1].length() - 1);
