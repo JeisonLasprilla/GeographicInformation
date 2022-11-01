@@ -12,6 +12,14 @@ import java.util.regex.Pattern;
 
 public class Control {
 
+    //Todo
+    // Test
+    // UML
+    // Readme
+    // Terminar los métodos
+    // Comparator
+    // SQL & JSON [x]
+
     public ArrayList<Country> countries;
     private Matcher mat;
     private String[] arrValues;
@@ -29,6 +37,8 @@ public class Control {
 
     public String insertInto(String command, String values) {
 
+        System.out.println(command);
+
         String out = "";
         //INSERT INTO countries(id, name, population, countryCode) VALUES ('83b3e642-3dd2-11ed-b878-0242ac120002', 'México', 128.9, '+59')
         Pattern intoCountries = Pattern.compile("INSERT INTO countries\\(id, name, population, countryCode\\) VALUES \\('([a-z0-9]|-)+', '([A-Za-zÀ-ÿ ])*', ([0-9]|\\.)+, '\\+[0-9]+'\\)");
@@ -38,7 +48,7 @@ public class Control {
         mat = intoCountries.matcher(command);
         if (mat.matches()) {
 
-            values = command.substring(65, command.length()-1);
+            values = command.substring(65, command.length() - 1);
             arrValues = values.split(",");
             String id = arrValues[0].substring(1, arrValues[0].length() - 1);
             String name = arrValues[1].substring(2, arrValues[1].length() - 1);
@@ -55,7 +65,7 @@ public class Control {
 
         mat = intoCities.matcher(command);
         if (mat.matches()) {
-            values = command.substring(60, command.length()-1);
+            values = command.substring(60, command.length() - 1);
             arrValues = values.split(",");
             String id = arrValues[0].substring(1, arrValues[0].length() - 1);
             String name = arrValues[1].substring(2, arrValues[1].length() - 1);
