@@ -68,7 +68,7 @@ public class Control {
             String id = arrValues[0].substring(1, arrValues[0].length() - 1);
             String name = arrValues[1].substring(2, arrValues[1].length() - 1);
             String countryID = arrValues[2].substring(2, arrValues[2].length() - 1);
-            Integer population = 0;
+            Double population = 0.0;
             if (arrValues[3].contains(".")) {
                 String[] arrDouble = arrValues[3].split("\\.");
                 System.out.println(arrDouble.length);
@@ -77,15 +77,15 @@ public class Control {
                     out = "Double error";
                 } else {
                     String p = arrDouble[0].substring(1);
-                    population = Integer.valueOf(p);
+                    population = Double.valueOf(p);
                 }
             } else {
-                population = Integer.valueOf(arrValues[3].substring(1));
+                population = Double.valueOf(arrValues[3].substring(1));
             }
 
             if (countryExists(countryID) != null) { // The country exists
 
-                City city = new City(id, name, arrValues[2], population);
+                City city = new City(id, name, arrValues[2], Double.valueOf(population));
                 countryExists(countryID).getCities().add(city);
                 out = city.toPrint();
 

@@ -5,9 +5,9 @@ public class City {
     private String id;
     private String name;
     private String countryID;
-    private Integer population;
+    private Double population;
 
-    public City(String id, String name, String countryID, Integer population) {
+    public City(String id, String name, String countryID, Double population) {
         this.id = id;
         this.name = name;
         this.countryID = countryID;
@@ -38,11 +38,11 @@ public class City {
         this.countryID = countryID;
     }
 
-    public Integer getPopulation() {
+    public Double getPopulation() {
         return population;
     }
 
-    public void setPopulation(Integer population) {
+    public void setPopulation(Double population) {
         this.population = population;
     }
 
