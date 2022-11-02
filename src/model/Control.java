@@ -277,7 +277,11 @@ public class Control{
         if(range.equals("COUNTRIES")){
             if(action.equals("PRINT")){
 
-                selectedCountries = countries;
+                selectedCountries.clear();
+
+                for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
+                    selectedCountries.add(countries.get(i));
+                }
 
                 //SORT CITIES
                 sortCountries(sort);
