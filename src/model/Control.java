@@ -36,9 +36,7 @@ public class Control {
 
 
     public String insertInto(String command, String values) {
-
         System.out.println(command);
-
         String out = "";
         //INSERT INTO countries(id, name, population, countryCode) VALUES ('83b3e642-3dd2-11ed-b878-0242ac120002', 'México', 128.9, '+59')
         Pattern intoCountries = Pattern.compile("INSERT INTO countries\\(id, name, population, countryCode\\) VALUES \\('([a-z0-9]|-)+', '([A-Za-zÀ-ÿ ])*', ([0-9]|\\.)+, '\\+[0-9]+'\\)");
