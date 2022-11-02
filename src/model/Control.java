@@ -1,31 +1,32 @@
 package model;
 
-import java.util.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Control{
+public class Control {
 
     //Todo
     // Test
     // UML
     // Readme
-    // tempCountry
+    // Terminar los métodos
     // Comparator
-    // SQL & JSON
+    // SQL & JSON [x]
 
-    private ArrayList<Country> countries;
+    public ArrayList<Country> countries;
     private Matcher mat;
     private String[] arrValues;
-    private ArrayList<City> selectedCities;
-    private ArrayList<Country> selectedCountries;
 
     private String action;
 
-
     public Control() {
-        selectedCities = new ArrayList<>();
-        selectedCountries = new ArrayList<>();
         countries = new ArrayList<>();
     }
 
@@ -33,16 +34,16 @@ public class Control{
         return "\n\tTypo\nInvalid command\n";
     }
 
+
     public String insertInto(String command, String values) {
 
         System.out.println(command);
 
         String out = "";
-        //INSERT INTO countries(id, name, population, countryCode) VALUES ('6ec3e8ec-3dd0-11ed-b878-0242ac120002', 'Colombia', 50.2, '+57')
-        Pattern intoCountries = Pattern.compile("INSERT INTO countries\\(id, name, population, countryCode\\) VALUES \\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', (([0-9])|(\\.))+, '\\+([0-9])+'\\)");
-
-        //INSERT INTO cities(id, name, countryID, population) VALUES ('91346eb8-3dd2-11ed-b878-0242ac120002', 'Puebla', '83b3e642-3dd2-11ed-b878-0242ac120002', 3.2)
-        Pattern intoCities = Pattern.compile("INSERT INTO cities\\(id, name, countryID, population\\) VALUES \\('([a-z0-9]|-)+', '([A-Z]|[a-z])*', '([a-z0-9]|-)+', ([0-9]|\\.)+\\)");
+        //INSERT INTO countries(id, name, population, countryCode) VALUES ('83b3e642-3dd2-11ed-b878-0242ac120002', 'México', 128.9, '+59')
+        Pattern intoCountries = Pattern.compile("INSERT INTO countries\\(id, name, population, countryCode\\) VALUES \\('([a-z0-9]|-)+', '([A-Za-zÀ-ÿ ])*', ([0-9]|\\.)+, '\\+[0-9]+'\\)");
+        //INSERT INTO cities(id, name, countryID, population) VALUES ('e4aa04f6-3dd0-11ed-b878-0242ac120002', 'Cali', '6ec3e8ec-3dd0-11ed-b878-0242ac120002', 2.2)
+        Pattern intoCities = Pattern.compile("INSERT INTO cities\\(id, name, countryID, population\\) VALUES \\('([a-z0-9]|-)+', '([A-Za-zÀ-ÿ ])*', '([a-z0-9]|-)+', ([0-9]|\\.)+\\)");
 
         mat = intoCountries.matcher(command);
         if (mat.matches()) {
@@ -59,7 +60,6 @@ public class Control{
                 Country country = new Country(id, name, Double.valueOf(population), countryCode);
                 countries.add(country);
                 out = country.toPrint();
-                //out = countries.get(0).toPrint();
             }
         }
 
@@ -87,7 +87,7 @@ public class Control{
 
             if (countryExists(countryID) != null) { // The country exists
 
-                City city = new City(id, name, arrValues[2], population);
+                City city = new City(id, name, arrValues[2], Double.valueOf(population));
                 countryExists(countryID).getCities().add(city);
                 out = city.toPrint();
 
@@ -135,7 +135,6 @@ public class Control{
 
             //SELECT * FROM cities WHERE name = 'Guadalajara' ORDER BY population
             //By name
-            //String id, String name, String countryID, Integer population
             Pattern byName = Pattern.compile("SELECT \\* FROM cities WHERE name = '([A-Z]|[a-z])*' ORDER BY ((population)|(countryID)|(name)|(id))");
             mat = byName.matcher(command);
             if(mat.matches()){
@@ -195,347 +194,49 @@ public class Control{
             String number = command.substring(43);
 
             if (mat.matches()) {
-                return manageMatches(symbol,null, number, action, "CITIES");
+                return manageMatches(symbol,null, number, action, "COUNTRIES");
             }
             return null;
         }
     }
 
-    //Manage by symbols
+    //Manage with symbols
     public String manageMatches(String symbol, String sort, String number, String action, String range){
 
-       if(range.equals("COUNTRIES")){//COUNTRIES
+        System.out.println(symbol);
+        System.out.println(sort);
+        System.out.println(number);
+        System.out.println(action);
+        System.out.println(range);
 
+        if(symbol.equals(">")){
 
-           if(action.equals("PRINT")){//SHOW SELECTED COUNTRIES
+        }else if(symbol.equals("<")){
 
-               selectedCountries.clear();
+        }else{// =
 
-               //SELECT
-               filterCountriesBySymbol(symbol, Double.valueOf(number));
-
-               //SORT COUNTRIES
-               sortCountries(sort);
-
-               //PRINT
-               return printCountries();
-
-           }else{//DELETE COUNTRIES
-               deleteCountriesBySymbol(symbol, Double.valueOf(number));
-               return "SUCCESSFUL DELETION";
-           }
-
-        }else{//CITIES
-
-           if(action.equals("PRINT")){//FILTER CITIES
-
-               selectedCities.clear();
-
-               //SELECT
-               filterCitiesBySymbol(symbol, Double.valueOf(number));
-
-               //SORT CITIES
-                sortCities(sort);
-
-               //PRINT
-               return printCities();
-
-           }else{//DELETE
-               deleteCitiesBySymbol(symbol, Double.valueOf(number));
-               return "SUCCESSFUL DELETION";
-           }
         }
+
+        return null;
     }
+
 
     //Manage all countries
     public String manageMatches(String sort, String action, String range){
 
-        if(range.equals("COUNTRIES")){
-            if(action.equals("PRINT")){
+        System.out.println(sort);
 
-                selectedCountries = countries;
-
-                //SORT CITIES
-                sortCountries(sort);
-
-                //PRINT
-                return printCountries();
-
-            }else{//DELETE
-                deleteAllCountries();
-                return "SUCCESSFUL DELETION";
-            }
-        }else{//CITIES
-            if(action.equals("PRINT")){
-
-                selectedCities.clear();
-
-                for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-                    for (int j = 0; j < countries.get(i).getCities().size() && countries.get(i).getCities().get(j)!=null; j++) {
-                        selectedCities.add(countries.get(i).getCities().get(j));
-                    }
-                }
-
-                //SORT CITIES
-                sortCities(sort);
-
-                //PRINT
-                return printCities();
-
-            }else{//DELETE
-                deleteAllCities();
-                return "SUCCESSFUL DELETION";
-            }
-        }
-    }
-
-    public void deleteAllCountries(){
-        for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-            countries.remove(i);
-        }
-    }
-
-    public void deleteAllCities(){
-        for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-            for (int j = 0; j < countries.get(i).getCities().size() && countries.get(i).getCities().get(j)!=null; j++) {
-                countries.remove(i);
-            }
-        }
+        return null;
     }
 
     //Manage by name
     public String manageMatches(String name, String sort, String action, String range){
 
-        if(range.equals("COUNTRIES")){
-            if(action.equals("PRINT")){
-
-                selectedCountries.clear();
-
-                //SELECT
-                filterCountriesByName(name);
-
-                //SORT CITIES
-                sortCountries(sort);
-
-                //PRINT
-                return printCountries();
-
-            }else{//DELETE
-                deleteCountriesByName(name);
-                return "SUCCESSFUL DELETION";
-            }
-        }else{//CITIES
-            if(action.equals("PRINT")){
-
-                selectedCities.clear();
-
-                //SELECT
-                filterCitiesByName(name);
-
-                //SORT CITIES
-                sortCities(sort);
-
-                //PRINT
-                return printCities();
-
-            }else{//DELETE
-                deleteCitiesByName(name);
-                return "SUCCESSFUL DELETION";
-            }
-        }
+        System.out.println(name);
+        System.out.println(sort);
+        return null;
     }
 
-    public String printCities(){
-        StringBuilder show = null;
-        for (City city : selectedCities) {
-            show.append(city.toPrint() + "\n");
-        }
-        return String.valueOf(show);
-    }
-
-    public String printCountries(){
-        StringBuilder show = null;
-        for (Country country : selectedCountries) {
-            show.append(country.toPrint() + "\n");
-        }
-        return String.valueOf(show);
-    }
-
-    public void deleteCitiesByName(String name){
-        for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-            for (int j = 0; j < countries.get(i).getCities().size() && countries.get(i).getCities().get(j)!=null; j++) {
-                if(countries.get(i).getCities().get(j).getName().equals(name)){
-                    countries.remove(i);
-                }
-            }
-        }
-    }
-
-    public void deleteCountriesByName(String name){
-        for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-            if(countries.get(i).getName().equals(name)){
-                countries.remove(i);
-            }
-        }
-    }
-
-    public void filterCitiesByName(String name){
-        for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-            for (int j = 0; j < countries.get(i).getCities().size() && countries.get(i).getCities().get(j)!=null; j++) {
-                if(countries.get(i).getCities().get(j).getName().equals(name)){
-                    selectedCities.add(countries.get(i).getCities().get(j));
-                }
-            }
-        }
-    }
-
-    public void filterCountriesByName(String name){
-        for (int i = 0; i < countries.size() && countries.get(i) != null; i++) {
-            if(countries.get(i).getName().equals(name)){
-                selectedCountries.add(countries.get(i));
-            }
-        }
-    }
-
-    public void sortCities(String sort){
-        if(sort!=null){
-            if(sort.equals("id")){
-                Collections.sort(selectedCities, (a,b)-> {
-                    int x = a.getId().compareTo(b.getId());
-                    return x;
-                });
-            }else if(sort.equals("name")){
-                Collections.sort(selectedCities, (a,b)-> {
-                    int x = a.getName().compareTo(b.getName());
-                    return x;
-                });
-            }else if(sort.equals("countryID")){
-                Collections.sort(selectedCities, (a,b)-> {
-                    int x = a.getCountryID().compareTo(b.getCountryID());
-                    return x;
-                });
-            }else{ //population
-                Collections.sort(selectedCities, (a,b)-> {
-                    int x = Double.compare(a.getPopulation(), b.getPopulation());
-                    return x;
-                });
-            }
-        }
-    }
-
-    public void sortCountries(String sort){
-        if(sort!=null){
-            if(sort.equals("name")){
-
-                Collections.sort(selectedCountries, (a,b)-> {
-                    int x = a.getName().compareTo(b.getName());
-                    return x;
-                });
-
-            }else if(sort.equals("population")){
-
-                Collections.sort(selectedCountries, (a,b)-> {
-                    int x = Double.compare(a.getPopulation(),b.getPopulation());
-                    return x;
-                });
-
-            }else if(sort.equals("countryCode")){
-
-                Collections.sort(selectedCountries, (a,b)-> {
-                    int x = a.getCountryCode().compareTo(b.getCountryCode());
-                    return x;
-                });
-
-            }else{//id
-                Collections.sort(selectedCountries, (a,b)-> {
-                    int x = a.getId().compareTo(b.getId());
-                    return x;
-                });
-            }
-        }
-    }
-
-    //By symbol
-    public void deleteCitiesBySymbol(String symbol, Double number){
-        for (int i = 0; i < countries.size(); i++) {
-            for (int j = 0; j < countries.get(i).getCities().size() && countries.get(i).getCities().get(j)!=null; j++) {
-
-                if(symbol.equals(">")){
-                    if(countries.get(i).getCities().get(j).getPopulation() > number){
-                        countries.get(i).getCities().remove(j);
-                    }
-                }else if(symbol.equals("<")){
-                    if(countries.get(i).getCities().get(j).getPopulation() < number){
-                        countries.get(i).getCities().remove(j);
-                    }
-                }else{// =
-                    if(countries.get(i).getCities().get(j).getPopulation() == number){
-                        countries.get(i).getCities().remove(j);
-                    }
-                }
-            }
-        }
-    }
-
-    //By symbol
-    public void filterCitiesBySymbol(String symbol, Double number){
-        for (int i = 0; i < countries.size() && countries.get(i)!=null; i++) {
-            for (int j = 0; j < countries.get(i).getCities().size() && countries.get(i).getCities().get(j)!=null; j++) {
-
-                if(symbol.equals(">")){
-                    if(countries.get(i).getCities().get(j).getPopulation() > number){
-                            selectedCities.add(countries.get(i).getCities().get(j));
-                    }
-                }else if(symbol.equals("<")){
-                    if(countries.get(i).getCities().get(j).getPopulation() < number){
-                            selectedCities.add(countries.get(i).getCities().get(j));
-                    }
-                }else{// =
-                    if(countries.get(i).getCities().get(j).getPopulation() == number){
-                            selectedCities.add(countries.get(i).getCities().get(j));
-                    }
-                }
-            }
-        }
-    }
-
-    public void deleteCountriesBySymbol(String symbol, Double number){
-        for (int i = 0; i < countries.size() && countries.get(i)!=null; i++) {
-
-            if(symbol.equals(">")){
-                if(countries.get(i).getPopulation() > number){
-                    countries.remove(countries.get(i));
-                }
-            }else if(symbol.equals("<")){
-                if(countries.get(i).getPopulation() < number){
-                    countries.remove(countries.get(i));
-                }
-            }else{// =
-                if(countries.get(i).getPopulation() == number){
-                    countries.remove(countries.get(i));
-                }
-            }
-        }
-    }
-
-    public void filterCountriesBySymbol(String symbol, Double number){
-        for (int i = 0; i < countries.size() && countries.get(i)!=null; i++) {
-
-            if(symbol.equals(">")){
-                if(countries.get(i).getPopulation() > number){
-                    selectedCountries.add(countries.get(i));
-                }
-            }else if(symbol.equals("<")){
-                if(countries.get(i).getPopulation() < number){
-                    selectedCountries.add(countries.get(i));
-                }
-            }else{// =
-                if(countries.get(i).getPopulation() == number){
-                    selectedCountries.add(countries.get(i));
-                }
-            }
-        }
-    }
 
     public String delete(String command) {
 
