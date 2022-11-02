@@ -1,4 +1,4 @@
 package exception;
 
-public class NoCountry {
+public class NoCountry extends Throwable{
 }
