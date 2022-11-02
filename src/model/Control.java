@@ -370,7 +370,7 @@ public class Control{
     }
 
     public String printCities(){
-        StringBuilder show = null;
+        StringBuilder show = new StringBuilder();
         for (City city : selectedCities) {
             show.append(city.toPrint() + "\n");
         }
