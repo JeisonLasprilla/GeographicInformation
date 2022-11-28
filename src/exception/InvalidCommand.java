@@ -1,4 +1,4 @@
 package exception;
 
-public class InvalidCommand {
+public class InvalidCommand extends Throwable{
 }

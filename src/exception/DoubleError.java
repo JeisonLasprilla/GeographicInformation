@@ -1,4 +1,4 @@
 package exception;
 
-public class DoubleError {
+public class DoubleError extends Throwable{
 }
